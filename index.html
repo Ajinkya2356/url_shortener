@@ -3,73 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>URL Shortener - Free and Easy URL Shortening Service</title>
-    <meta name="description" content="Shorten your URLs quickly and easily with our free URL shortener. Create short links for free and share them with your friends.">
-    <meta name="keywords" content="URL shortener, shorten URL, free URL shortener, create short links">
+    <title>URL Shortener - Modern and Easy URL Shortening Service</title>
+    <meta name="description" content="Shorten your URLs quickly and easily with our modern URL shortener. Create short links for free and share them with your friends.">
     <meta name="author" content="Ajinkya Jagtap">
-    <meta property="og:title" content="URL Shortener - Free and Easy URL Shortening Service">
-    <meta property="og:description" content="Shorten your URLs quickly and easily with our free URL shortener. Create short links for free and share them with your friends.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://yourdomain.com">
-    <meta property="og:image" content="https://yourdomain.com/og-image.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="icon" href="https://yourdomain.com/favicon.ico" type="image/x-icon">
     <style>
         body {
-            background-color: #121212;
+            background: linear-gradient(135deg, #121212, #1a1a1a);
             color: #ffffff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
-            margin: 0;
+            min-height: 100vh;
         }
+
         .container {
-            text-align: center;
+            background-color: #222;
             padding: 40px;
-            border: 1px solid #333;
-            border-radius: 10px;
-            background-color: #1e1e1e;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-            max-width: 600px;
-            width: 100%;
+            border-radius: 15px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
         }
+
         h1 {
-            font-size: 2.5em;
+            font-size: 2.5rem;
             margin-bottom: 20px;
+            font-weight: 700;
         }
+
         input[type="text"] {
             width: 100%;
             padding: 15px;
             margin: 20px 0;
-            border: 1px solid #555;
-            border-radius: 5px;
+            border: none;
+            border-radius: 10px;
             background-color: #333;
-            color: #fff;
-            font-size: 16px;
+            color: #ffffff;
+            font-size: 1rem;
+            outline: none;
+            transition: box-shadow 0.3s;
         }
+
+        input[type="text"]:focus {
+            box-shadow: 0 0 10px #6200ea;
+        }
+
         button {
             padding: 15px 30px;
             border: none;
-            border-radius: 5px;
-            background-color: #6200ea;
-            color: #fff;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #6200ea, #3700b3);
+            color: #ffffff;
+            font-size: 1rem;
+            font-weight: 600;
             cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s;
+            transition: transform 0.3s, box-shadow 0.3s;
         }
+
         button:hover {
-            background-color: #3700b3;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4);
         }
+
         .result, .error {
             margin-top: 20px;
-            font-size: 18px;
+            font-size: 1rem;
         }
-        .loading {
-            display: none;
-            margin-top: 20px;
-        }
+
         .copy-btn {
             margin-top: 10px;
             padding: 10px 20px;
@@ -78,71 +85,48 @@
             background-color: #03dac6;
             color: #000;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 0.9rem;
+            font-weight: 600;
             transition: background-color 0.3s;
         }
+
         .copy-btn:hover {
             background-color: #018786;
         }
-        .content {
-            margin-top: 20px;
-            text-align: left;
-        }
-        .content h2 {
-            color: #03dac6;
-        }
-        .content p {
-            margin: 10px 0;
-        }
+
         footer {
             margin-top: 20px;
             text-align: center;
+            font-size: 0.8rem;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            button {
+                width: 100%;
+            }
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>Free URL Shortener Service</h1>
+        <h1>Modern URL Shortener</h1>
     </header>
     <main class="container">
         <form id="urlForm">
             <input type="text" id="originalURL" placeholder="Enter URL to shorten" required>
-            <button type="submit">Convert</button>
+            <button type="submit">Shorten</button>
         </form>
-        <div class="loading" id="loading">Processing...</div>
+        <div class="loading" id="loading" style="display: none;">Processing...</div>
         <div class="result" id="result"></div>
         <div class="error" id="error"></div>
         <button class="copy-btn" id="copyBtn" style="display: none;">Copy to Clipboard</button>
-        <div class="content">
-            <h2>Why Use Our URL Shortener?</h2>
-            <p>Our URL shortener is a free and easy-to-use tool that allows you to create short links from long URLs. Shortened URLs are easier to share and manage. Whether you are sharing links on social media, in emails, or in text messages, our URL shortener makes it simple and convenient.</p>
-            <p>With our service, you can:</p>
-            <ul>
-                <li>Shorten long URLs quickly and easily</li>
-                <li>Share short links with friends and colleagues</li>
-                <li>Track the number of clicks on your short links</li>
-            </ul>
-            <h2>How to Use Our URL Shortener</h2>
-            <p>Using our URL shortener is simple:</p>
-            <ol>
-                <li>Enter the long URL you want to shorten in the input box above.</li>
-                <li>Click the "Convert" button.</li>
-                <li>Copy the shortened URL and share it wherever you like.</li>
-            </ol>
-            <p>Start shortening your URLs today and enjoy the convenience of short links!</p>
-            <h2>Popular URL Shorteners</h2>
-            <p>Check out these popular URL shorteners:</p>
-            <ul>
-                <li><a href="https://bitly.com" target="_blank">Bitly</a></li>
-                <li><a href="https://tinyurl.com" target="_blank">TinyURL</a></li>
-                <li><a href="https://goo.gl" target="_blank">Google URL Shortener</a></li>
-                <li><a href="https://is.gd" target="_blank">is.gd</a></li>
-                <li><a href="https://t2mio.com" target="_blank">T2M</a></li>
-            </ul>
-        </div>
     </main>
     <footer>
-        <p>&copy; 2023 Ajinkya Jagtap. All rights reserved.</p>
+        <p>&copy; 2025 Ajinkya Jagtap. All rights reserved.</p>
     </footer>
     <script>
         function isValidURL(string) {
@@ -150,7 +134,7 @@
                 new URL(string);
                 return true;
             } catch (_) {
-                return false;  
+                return false;
             }
         }
 
@@ -181,23 +165,23 @@
                 },
                 body: JSON.stringify({ url: originalURL })
             });
-            const data = await response.json();
 
+            const data = await response.json();
             loading.style.display = 'none';
+
             if (response.ok) {
                 result.innerHTML = `Shortened URL: <a href="${data.shortURL}" target="_blank">${data.shortURL}</a>`;
                 copyBtn.style.display = 'block';
+                copyBtn.onclick = function() {
+                    navigator.clipboard.writeText(data.shortURL).then(() => {
+                        alert('Shortened URL copied to clipboard!');
+                    }).catch(err => {
+                        console.error('Could not copy text: ', err);
+                    });
+                };
             } else {
                 error.innerText = 'Error: ' + data.error;
             }
-
-            copyBtn.onclick = function() {
-                navigator.clipboard.writeText(data.shortURL).then(function() {
-                    alert('Shortened URL copied to clipboard!');
-                }, function(err) {
-                    console.error('Could not copy text: ', err);
-                });
-            };
         });
     </script>
 </body>
