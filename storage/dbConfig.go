@@ -12,6 +12,7 @@ type URL struct {
     gorm.Model
     OriginalURL string `gorm:"unique"`
     ShortURL    string `gorm:"unique"`
+    Alias       string `gorm:"unique;index"`
 }
 
 func InitDB() *gorm.DB {
