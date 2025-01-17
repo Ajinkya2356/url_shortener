@@ -185,12 +185,10 @@
         Welcome to our URL Shortener, where long and cumbersome links are
         transformed into simple, easy-to-share URLs. Our service offers:
       </p>
-      <ul>
-        <li>Effortless URL shortening in seconds</li>
-        <li>Custom aliases to personalize your links</li>
-        <li>QR code generation for quick sharing</li>
-        <li>Detailed click analytics to track performance</li>
-      </ul>
+      <!-- QR Code container -->
+      <div id="qrCode">
+        <canvas id="qrCanvas"></canvas>
+      </div>
       <form id="urlForm">
         <input
           type="text"
@@ -213,10 +211,6 @@
       <button class="copy-btn" id="copyBtn" style="display: none">
         Copy to Clipboard
       </button>
-      <!-- QR Code container -->
-      <div id="qrCode">
-        <canvas id="qrCanvas"></canvas>
-      </div>
     </main>
     <footer>
       <p>
