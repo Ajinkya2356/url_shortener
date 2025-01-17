@@ -29,16 +29,15 @@ func ShortenURL(db *gorm.DB) gin.HandlerFunc {
 
 		var shortURL string
 		// If alias is provided, check if it's available
-		if req.Alias != "" {
+		if req.Alias != "" && strings.TrimSpace(req.Alias) != "" {
 			var existingURL storage.URL
 			if err := db.Where("alias = ?", req.Alias).First(&existingURL).Error; err == nil {
 				c.JSON(http.StatusBadRequest, gin.H{"error": "Alias already taken"})
 				return
 			}
-			// Use the alias as the short URL
 			shortURL = req.Alias
 		} else {
-			// Generate short URL as before
+			// Generate short URL if no alias provided
 			shortURL = service.GenerateURLShortener(req.URL)
 			for {
 				var existingURL storage.URL
