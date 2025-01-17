@@ -3,7 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>URL Shortener</title>
+    <title>URL Shortener - Shorten Your URLs Easily</title>
+    <meta name="description" content="Shorten your URLs quickly and easily with our URL shortener. Create short links for free and share them with your friends.">
+    <meta name="keywords" content="URL shortener, shorten URL, free URL shortener, create short links">
+    <meta name="author" content="Your Name">
+    <meta property="og:title" content="URL Shortener - Shorten Your URLs Easily">
+    <meta property="og:description" content="Shorten your URLs quickly and easily with our URL shortener. Create short links for free and share them with your friends.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://yourdomain.com">
+    <meta property="og:image" content="https://yourdomain.com/og-image.jpg">
     <style>
         body {
             background-color: #121212;
@@ -72,8 +80,10 @@
     </style>
 </head>
 <body>
-    <div class="container">
+    <header>
         <h1>URL Shortener</h1>
+    </header>
+    <main class="container">
         <form id="urlForm">
             <input type="text" id="originalURL" placeholder="Enter URL to shorten" required>
             <button type="submit">Convert</button>
@@ -81,7 +91,10 @@
         <div class="loading" id="loading">Processing...</div>
         <div class="result" id="result"></div>
         <button class="copy-btn" id="copyBtn" style="display: none;">Copy to Clipboard</button>
-    </div>
+    </main>
+    <footer>
+        <p>&copy; 2023 Your Name. All rights reserved.</p>
+    </footer>
     <script>
         document.getElementById('urlForm').addEventListener('submit', async function(event) {
             event.preventDefault();
@@ -94,7 +107,7 @@
             result.innerHTML = '';
             copyBtn.style.display = 'none';
 
-            const response = await fetch('https://url-shortener-jl9o.onrender.com/encode', {
+            const response = await fetch('http://localhost:5000/encode', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
