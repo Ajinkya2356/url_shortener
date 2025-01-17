@@ -88,6 +88,10 @@
         .content p {
             margin: 10px 0;
         }
+        .error {
+            color: #ff0000;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -101,6 +105,7 @@
         </form>
         <div class="loading" id="loading">Processing...</div>
         <div class="result" id="result"></div>
+        <div class="error" id="error"></div>
         <button class="copy-btn" id="copyBtn" style="display: none;">Copy to Clipboard</button>
         <div class="content">
             <h2>Why Use Our URL Shortener?</h2>
@@ -125,15 +130,33 @@
         <p>&copy; 2023 Ajinkya Jagtap. All rights reserved.</p>
     </footer>
     <script>
+        function isValidURL(string) {
+            try {
+                new URL(string);
+                return true;
+            } catch (_) {
+                return false;  
+            }
+        }
+
         document.getElementById('urlForm').addEventListener('submit', async function(event) {
             event.preventDefault();
             const originalURL = document.getElementById('originalURL').value;
             const loading = document.getElementById('loading');
             const result = document.getElementById('result');
+            const error = document.getElementById('error');
             const copyBtn = document.getElementById('copyBtn');
+
+            if (!isValidURL(originalURL)) {
+                error.innerText = 'Invalid URL. Please enter a valid URL.';
+                result.innerHTML = '';
+                copyBtn.style.display = 'none';
+                return;
+            }
 
             loading.style.display = 'block';
             result.innerHTML = '';
+            error.innerHTML = '';
             copyBtn.style.display = 'none';
 
             const response = await fetch('https://url-shortener-jl9o.onrender.com/encode', {
@@ -146,8 +169,12 @@
             const data = await response.json();
 
             loading.style.display = 'none';
-            result.innerHTML = `Shortened URL: <a href="${data.shortURL}" target="_blank">${data.shortURL}</a>`;
-            copyBtn.style.display = 'block';
+            if (response.ok) {
+                result.innerHTML = `Shortened URL: <a href="${data.shortURL}" target="_blank">${data.shortURL}</a>`;
+                copyBtn.style.display = 'block';
+            } else {
+                error.innerText = 'Error: ' + data.error;
+            }
 
             copyBtn.onclick = function() {
                 navigator.clipboard.writeText(data.shortURL).then(function() {
