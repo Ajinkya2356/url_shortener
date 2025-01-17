@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Shortener</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            padding: 40px;
+            border: 1px solid #333;
+            border-radius: 10px;
+            background-color: #1e1e1e;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        input[type="text"] {
+            width: 80%;
+            padding: 15px;
+            margin: 20px 0;
+            border: 1px solid #555;
+            border-radius: 5px;
+            background-color: #333;
+            color: #fff;
+            font-size: 16px;
+        }
+        button {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 5px;
+            background-color: #6200ea;
+            color: #fff;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #3700b3;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+        .loading {
+            display: none;
+            margin-top: 20px;
+        }
+        .copy-btn {
+            margin-top: 10px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #03dac6;
+            color: #000;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+        .copy-btn:hover {
+            background-color: #018786;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>URL Shortener</h1>
+        <form id="urlForm">
+            <input type="text" id="originalURL" placeholder="Enter URL to shorten" required>
+            <button type="submit">Convert</button>
+        </form>
+        <div class="loading" id="loading">Processing...</div>
+        <div class="result" id="result"></div>
+        <button class="copy-btn" id="copyBtn" style="display: none;">Copy to Clipboard</button>
+    </div>
+    <script>
+        document.getElementById('urlForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const originalURL = document.getElementById('originalURL').value;
+            const loading = document.getElementById('loading');
+            const result = document.getElementById('result');
+            const copyBtn = document.getElementById('copyBtn');
+
+            loading.style.display = 'block';
+            result.innerHTML = '';
+            copyBtn.style.display = 'none';
+
+            const response = await fetch('http://localhost:5000/encode', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ url: originalURL })
+            });
+            const data = await response.json();
+
+            loading.style.display = 'none';
+            result.innerHTML = `Shortened URL: <a href="${data.shortURL}" target="_blank">${data.shortURL}</a>`;
+            copyBtn.style.display = 'block';
+
+            copyBtn.onclick = function() {
+                navigator.clipboard.writeText(data.shortURL).then(function() {
+                    alert('Shortened URL copied to clipboard!');
+                }, function(err) {
+                    console.error('Could not copy text: ', err);
+                });
+            };
+        });
+    </script>
+</body>
+</html>
