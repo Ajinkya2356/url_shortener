@@ -12,6 +12,10 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://yourdomain.com">
     <meta property="og:image" content="https://yourdomain.com/og-image.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="URL Shortener - Simplify and Customize Your Links">
+    <meta name="twitter:description" content="Simplify your links with our URL Shortener. Create short URLs, customize them with aliases, generate QR codes, and track analytics for better performance.">
+    <meta name="twitter:image" content="https://yourdomain.com/og-image.jpg">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="icon" href="https://yourdomain.com/favicon.ico" type="image/x-icon">
     <style>
@@ -28,6 +32,11 @@
             min-height: 100vh;
         }
 
+        header {
+            text-align: center;
+            padding: 20px;
+        }
+
         .container {
             background-color: #1e1e1e;
             padding: 40px;
@@ -36,6 +45,7 @@
             text-align: center;
             max-width: 600px;
             width: 90%;
+            margin-bottom: 20px;
         }
 
         h1 {
@@ -116,6 +126,16 @@
             color: #cccccc;
         }
 
+        #qrCode {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        #qrCode canvas {
+            max-width: 100%;
+            height: auto;
+        }
+
         @media (max-width: 600px) {
             h1 {
                 font-size: 2rem;
@@ -149,7 +169,7 @@
         <div class="result" id="result"></div>
         <div class="error" id="error"></div>
         <button class="copy-btn" id="copyBtn" style="display: none;">Copy to Clipboard</button>
-        <div id="qrCode" style="margin-top: 20px;"></div>
+        <div id="qrCode"></div>
     </main>
     <footer>
         <p>&copy; 2025 Ajinkya Jagtap. All rights reserved. Simplify and customize your digital sharing with our URL Shortener.</p>
@@ -173,11 +193,13 @@
             const result = document.getElementById('result');
             const error = document.getElementById('error');
             const copyBtn = document.getElementById('copyBtn');
+            const qrCodeContainer = document.getElementById('qrCode');
 
             if (!isValidURL(originalURL)) {
                 error.innerText = 'Invalid URL. Please enter a valid URL.';
                 result.innerHTML = '';
                 copyBtn.style.display = 'none';
+                qrCodeContainer.innerHTML = '';  // Clear QR code on error
                 return;
             }
 
@@ -185,6 +207,7 @@
             result.innerHTML = '';
             error.innerHTML = '';
             copyBtn.style.display = 'none';
+            qrCodeContainer.innerHTML = '';  // Clear previous QR code
 
             try {
                 const response = await fetch('https://url-shortener-jl9o.onrender.com/encode', {
@@ -210,9 +233,7 @@
                     };
 
                     // Generate QR Code
-                    const qrCodeContainer = document.getElementById('qrCode');
-                    qrCodeContainer.innerHTML = ''; // Clear previous QR code
-                    QRCode.toCanvas(qrCodeContainer, data.shortURL, { width: 128 }, function(error) {
+                    QRCode.toCanvas(qrCodeContainer, data.shortURL, { width: 200 }, function(error) {
                         if (error) console.error(error);
                     });
                 } else {
