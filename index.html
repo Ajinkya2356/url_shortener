@@ -55,11 +55,13 @@
         align-items: center;
         justify-content: center;
         min-height: 100vh;
+        text-align: center;
       }
 
       header {
         text-align: center;
         padding: 20px;
+        margin-bottom: 30px;
       }
 
       .container {
@@ -146,7 +148,7 @@
       }
 
       footer {
-        margin-top: 20px;
+        margin-top: 30px;
         text-align: center;
         font-size: 0.8rem;
         color: #cccccc;
@@ -155,11 +157,16 @@
       #qrCode {
         margin-top: 20px;
         text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        max-width: 100%;
       }
 
-      #qrCode canvas {
+      #qrCanvas {
         max-width: 100%;
         height: auto;
+        display: block;
       }
 
       @media (max-width: 600px) {
