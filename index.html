@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>URL Shortener - Simplify Your Links</title>
-    <meta name="description" content="Simplify your links with our URL Shortener. Create custom short URLs, generate QR codes, and track detailed analytics.">
-    <meta name="keywords" content="URL shortener, custom short links, QR code generator, link analytics, URL shortening service">
+    <meta name="description" content="Simplify your links with our URL Shortener. Create short URLs, generate QR codes, and track detailed analytics to boost your online presence.">
+    <meta name="keywords" content="URL shortener, short links, QR code generator, URL analytics, link tracking, free URL shortener">
     <meta name="author" content="Ajinkya Jagtap">
     <meta property="og:title" content="URL Shortener - Simplify Your Links">
-    <meta property="og:description" content="Simplify your links with our URL Shortener. Create custom short URLs, generate QR codes, and track detailed analytics.">
+    <meta property="og:description" content="Simplify your links with our URL Shortener. Create short URLs, generate QR codes, and track detailed analytics to boost your online presence.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://yourdomain.com">
     <meta property="og:image" content="https://yourdomain.com/og-image.jpg">
@@ -16,8 +16,8 @@
     <link rel="icon" href="https://yourdomain.com/favicon.ico" type="image/x-icon">
     <style>
         body {
-            background: linear-gradient(135deg, #121212, #1a1a1a);
-            color: #ffffff;
+            background: linear-gradient(135deg, #f5f5f5, #d1d1d1);
+            color: #333333;
             font-family: 'Inter', sans-serif;
             margin: 0;
             padding: 0;
@@ -29,29 +29,36 @@
         }
 
         .container {
-            background-color: #222;
+            background-color: #ffffff;
             padding: 40px;
             border-radius: 15px;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
             text-align: center;
-            max-width: 500px;
+            max-width: 600px;
             width: 90%;
         }
 
         h1 {
             font-size: 2.5rem;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             font-weight: 700;
+            color: #6200ea;
+        }
+
+        p {
+            font-size: 1rem;
+            margin: 10px 0;
+            color: #555555;
         }
 
         input[type="text"] {
             width: 100%;
             padding: 15px;
-            margin: 10px 0;
-            border: none;
+            margin: 20px 0;
+            border: 1px solid #ddd;
             border-radius: 10px;
-            background-color: #333;
-            color: #ffffff;
+            background-color: #f9f9f9;
+            color: #333;
             font-size: 1rem;
             outline: none;
             transition: box-shadow 0.3s;
@@ -76,12 +83,13 @@
 
         button:hover {
             transform: translateY(-3px);
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
         }
 
         .result, .error {
             margin-top: 20px;
             font-size: 1rem;
+            color: #6200ea;
         }
 
         .copy-btn {
@@ -105,6 +113,7 @@
             margin-top: 20px;
             text-align: center;
             font-size: 0.8rem;
+            color: #777;
         }
 
         @media (max-width: 600px) {
@@ -121,11 +130,17 @@
 <body>
     <header>
         <h1>URL Shortener</h1>
+        <p>Your go-to tool for creating simple, shareable links</p>
     </header>
     <main class="container">
+        <p>Welcome to our URL Shortener, where long and cumbersome links are transformed into simple, easy-to-share URLs. Our service offers:</p>
+        <ul>
+            <li>Effortless URL shortening in seconds</li>
+            <li>QR code generation for your links</li>
+            <li>Detailed click analytics to track performance</li>
+        </ul>
         <form id="urlForm">
             <input type="text" id="originalURL" placeholder="Enter URL to shorten" required>
-            <input type="text" id="customAlias" placeholder="Enter custom alias (optional)">
             <button type="submit">Shorten</button>
         </form>
         <div class="loading" id="loading" style="display: none;">Processing...</div>
@@ -135,7 +150,7 @@
         <div id="qrCode" style="margin-top: 20px;"></div>
     </main>
     <footer>
-        <p>&copy; 2025 Ajinkya Jagtap. All rights reserved.</p>
+        <p>&copy; 2025 Ajinkya Jagtap. All rights reserved. Simplify your digital sharing with our URL Shortener.</p>
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/qrcode@1.4.4/build/qrcode.min.js"></script>
     <script>
@@ -151,7 +166,6 @@
         document.getElementById('urlForm').addEventListener('submit', async function(event) {
             event.preventDefault();
             const originalURL = document.getElementById('originalURL').value;
-            const customAlias = document.getElementById('customAlias').value.trim();
             const loading = document.getElementById('loading');
             const result = document.getElementById('result');
             const error = document.getElementById('error');
@@ -175,7 +189,7 @@
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ url: originalURL, alias: customAlias })
+                    body: JSON.stringify({ url: originalURL })
                 });
 
                 const data = await response.json();
