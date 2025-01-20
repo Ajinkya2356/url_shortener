@@ -3,256 +3,427 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>URL Shortener & QR Code Generator</title>
+    <title>
+      URL Shortener & QR Code Generator - Free URL Shortening Service
+    </title>
     <meta
       name="description"
-      content="Transform long URLs into short links and instantly generate QR codes. Our URL Shortener provides custom aliases, QR code generation for easy sharing, and analytics tracking. Perfect for business cards, marketing materials, and social media sharing."
+      content="Transform long URLs into short links and instantly generate QR codes. Our URL Shortener provides custom aliases, QR code generation for easy sharing, and analytics tracking."
     />
     <meta
       name="keywords"
-      content="URL shortener, short links, QR code generator, QR codes, custom aliases, URL analytics, link tracking, free URL shortener, generate QR code, scan QR code"
+      content="URL shortener, short links, QR code generator, QR codes, custom aliases, URL analytics"
     />
     <meta name="author" content="Ajinkya Jagtap" />
-    <meta
-      property="og:title"
-      content="URL Shortener with QR Code Generator - Simplify and Share Your Links"
-    />
+    <meta property="og:title" content="URL Shortener & QR Code Generator" />
     <meta
       property="og:description"
-      content="Transform long URLs into short links and instantly generate QR codes. Our URL Shortener provides custom aliases, QR code generation for easy sharing, and analytics tracking. Perfect for business cards, marketing materials, and social media sharing."
+      content="Transform long URLs into short links and instantly generate QR codes"
     />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://yourdomain.com" />
-    <meta property="og:image" content="https://yourdomain.com/og-image.jpg" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta
-      name="twitter:title"
-      content="URL Shortener with QR Code Generator - Simplify and Share Your Links"
-    />
-    <meta
-      name="twitter:description"
-      content="Transform long URLs into short links and instantly generate QR codes. Our URL Shortener provides custom aliases, QR code generation for easy sharing, and analytics tracking. Perfect for business cards, marketing materials, and social media sharing."
-    />
-    <meta name="twitter:image" content="https://yourdomain.com/og-image.jpg" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="icon"
-      href="https://img.icons8.com/?size=100&id=7867&format=png&color=000000"
-      type="image/x-icon"
-    />
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.4.4/build/qrcode.min.js"></script>
     <style>
-      body {
-        background: linear-gradient(135deg, #121212, #1a1a1a);
-        color: #ffffff;
-        font-family: "Inter", sans-serif;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        min-height: 100vh;
-        text-align: center;
+      :root {
+        --primary-color: #03dac6;
+        --secondary-color: #6200ea;
+        --bg-color: #121212;
+        --text-color: #ffffff;
       }
 
-      header {
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: "Segoe UI", sans-serif;
+        background: linear-gradient(135deg, var(--bg-color), #1a1a1a);
+        color: var(--text-color);
+        min-height: 100vh;
+      }
+
+      .hero {
         text-align: center;
-        padding: 20px;
+        padding: 40px 20px;
+        background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)),
+          url("https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1920");
+        background-size: cover;
+        background-position: center;
         margin-bottom: 30px;
       }
 
-      .container {
-        background-color: #1e1e1e;
-        padding: 40px;
-        border-radius: 15px;
-        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
-        text-align: center;
-        max-width: 600px;
-        width: 90%;
+      .hero h1 {
+        font-size: 3em;
         margin-bottom: 20px;
+        background: linear-gradient(
+          45deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
       }
 
-      h1 {
-        font-size: 2.5rem;
-        margin-bottom: 10px;
-        font-weight: 700;
-        color: #03dac6;
-      }
-
-      p {
-        font-size: 1rem;
-        margin: 10px 0;
-        color: #cccccc;
-      }
-
-      #urlForm {
+      .container {
         width: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 15px;
-        padding: 20px 0;
-      }
-
-      input[type="text"] {
-        width: calc(100% - 30px);
-        padding: 15px;
-        margin: 10px 0;
-        border: 1px solid #555;
-        border-radius: 10px;
-        background-color: #333333;
-        color: #ffffff;
-        font-size: 1rem;
-        outline: none;
-        transition: box-shadow 0.3s;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
         box-sizing: border-box;
       }
 
+      #urlForm {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        margin: 0 auto 40px;
+        position: relative;
+        z-index: 1;
+      }
+
+      input[type="text"] {
+        width: 100%;
+        padding: 20px;
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        border-radius: 15px;
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--text-color);
+        font-size: 1.1rem;
+        margin-bottom: 20px;
+        box-sizing: border-box;
+        transition: all 0.3s ease;
+      }
+
       input[type="text"]:focus {
-        box-shadow: 0 0 10px #03dac6;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 20px rgba(3, 218, 198, 0.2);
+        outline: none;
       }
 
       button {
-        padding: 15px 30px;
+        width: 100%;
+        padding: 20px;
         border: none;
-        border-radius: 10px;
-        background: linear-gradient(135deg, #03dac6, #018786);
-        color: #000000;
-        font-size: 1rem;
+        border-radius: 15px;
+        background: linear-gradient(
+          45deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        color: var(--text-color);
+        font-size: 1.1rem;
         font-weight: 600;
         cursor: pointer;
-        transition: transform 0.3s, box-shadow 0.3s;
-        margin-top: 10px;
+        transition: transform 0.3s ease;
       }
 
       button:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
       }
 
-      .result,
-      .error {
-        margin-top: 20px;
-        font-size: 1rem;
-        color: #03dac6;
-      }
-
-      .copy-btn {
-        margin-top: 10px;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 5px;
-        background-color: #6200ea;
-        color: #ffffff;
-        cursor: pointer;
-        font-size: 0.9rem;
-        font-weight: 600;
-        transition: background-color 0.3s;
-      }
-
-      .copy-btn:hover {
-        background-color: #3700b3;
-      }
-
-      footer {
-        margin-top: 30px;
+      .qr-section {
+        display: none;
+        margin: 20px auto;
+        padding: 20px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
         text-align: center;
-        font-size: 0.8rem;
-        color: #cccccc;
-      }
-
-      #qrCode {
-        margin-top: 20px;
-        text-align: center;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        max-width: 100%;
       }
 
       #qrCanvas {
-        max-width: 100%;
-        height: auto;
-        display: block;
+        margin: 20px auto;
+        background: white;
+        padding: 10px;
+        border-radius: 10px;
       }
 
-      #loading {
-        margin-top: 5%;
+      .download-qr {
+        background: var(--primary-color);
+        color: var(--text-color);
+        padding: 10px 20px;
+        border-radius: 8px;
+        text-decoration: none;
+        display: inline-block;
+        margin-top: 10px;
+        transition: background-color 0.3s;
       }
 
-      @media (max-width: 600px) {
+      .download-qr:hover {
+        background: var(--secondary-color);
+      }
+
+      .features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 30px;
+        padding: 40px 0;
+      }
+
+      .feature-card {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 30px;
+        border-radius: 15px;
+        text-align: center;
+        transition: transform 0.3s;
+      }
+
+      .feature-card:hover {
+        transform: translateY(-5px);
+      }
+
+      .result {
+        margin-top: 20px;
+        padding: 20px;
+        background: rgba(3, 218, 198, 0.1);
+        border-radius: 15px;
+        text-align: center;
+      }
+
+      .result a {
+        color: var(--primary-color);
+        text-decoration: none;
+      }
+
+      .loading {
+        display: none;
+        text-align: center;
+        margin: 20px 0;
+      }
+
+      .error {
+        color: #ff4444;
+        margin: 10px 0;
+        text-align: center;
+      }
+      .main-container {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 30px;
+        align-items: start;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      .form-section {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      }
+
+      .qr-section {
+        position: sticky;
+        top: 20px;
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 40px;
+        text-align: center;
+        transition: opacity 0.3s ease;
+      }
+      .footer {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        margin-top: 60px;
+        padding: 40px 0;
+      }
+
+      .footer-container {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 30px;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      .footer-section h3 {
+        color: var(--primary-color);
+        margin-bottom: 20px;
+      }
+
+      .footer-section ul {
+        list-style: none;
+        padding: 0;
+      }
+
+      .footer-section ul li {
+        margin-bottom: 10px;
+      }
+
+      .footer-section a {
+        color: var(--text-color);
+        text-decoration: none;
+        transition: color 0.3s;
+      }
+
+      .footer-section a:hover {
+        color: var(--primary-color);
+      }
+
+      .footer-bottom {
+        text-align: center;
+        padding-top: 40px;
+        margin-top: 40px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      @media (max-width: 768px) {
+        .footer-container {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      @media (max-width: 480px) {
+        .footer-container {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .main-container {
+          grid-template-columns: 1fr;
+        }
+
+        .qr-section {
+          position: static;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .hero h1 {
+          font-size: 2em;
+        }
+
         #urlForm {
-          padding: 10px;
-        }
-        h1 {
-          font-size: 2rem;
-        }
-
-        button {
-          width: 100%;
+          padding: 20px;
         }
       }
     </style>
   </head>
   <body>
-    <header>
-      <h1>URL Shortener</h1>
-      <p>
-        Your go-to tool for creating simple, shareable, and customizable links
-      </p>
-    </header>
-    <main class="container">
-      <p>
-        Welcome to our URL Shortener, where long and cumbersome links are
-        transformed into simple, easy-to-share URLs. Our service offers:
-      </p>
-      <!-- QR Code container -->
-      <div id="qrCode">
-        <canvas id="qrCanvas"></canvas>
-      </div>
-      <form id="urlForm">
-        <input
-          type="text"
-          id="originalURL"
-          placeholder="Enter URL to shorten"
-          required
-        />
-        <input
-          type="text"
-          id="alias"
-          placeholder="Enter custom alias (optional)"
-        />
-        <button type="submit">Shorten</button>
-      </form>
-      <div class="loading" id="loading" style="display: none">
-        Processing...
-      </div>
-      <div class="result" id="result"></div>
-      <div class="error" id="error"></div>
-      <button class="copy-btn" id="copyBtn" style="display: none">
-        Copy to Clipboard
-      </button>
-    </main>
-    <footer>
-      <p>
-        &copy; 2025 Ajinkya Jagtap. All rights reserved. Simplify and customize
-        your digital sharing with our URL Shortener.
-      </p>
-    </footer>
-    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.4.4/build/qrcode.min.js"></script>
-    <script>
-      function isValidURL(string) {
-        try {
-          new URL(string);
-          return true;
-        } catch (_) {
-          return false;
-        }
-      }
+    <div class="hero">
+      <h1>URL Shortener & QR Code Generator</h1>
+      <p>Transform long URLs into short, memorable links</p>
+    </div>
 
+    <div class="container">
+      <div class="main-container">
+        <div class="form-section">
+          <form id="urlForm">
+            <input
+              type="text"
+              id="originalURL"
+              placeholder="Paste your long URL here..."
+              required
+            />
+            <input
+              type="text"
+              id="alias"
+              placeholder="Custom alias (optional)"
+            />
+            <div id="loading" class="loading">Processing...</div>
+            <div id="error" class="error"></div>
+            <button type="submit">Shorten URL</button>
+            <div id="result" class="result" style="display: none"></div>
+          </form>
+        </div>
+
+        <div id="qrSection" class="qr-section" style="display: none">
+          <h2>QR Code</h2>
+          <canvas id="qrCanvas"></canvas>
+          <a
+            href="#"
+            id="downloadQR"
+            class="download-qr"
+            download="qr-code.png"
+          >
+            Download QR Code
+          </a>
+        </div>
+      </div>
+
+      <div class="features">
+        <div class="feature-card">
+          <img
+            src="https://img.icons8.com/?size=100&id=9769&format=png&color=FFFFFF"
+            alt="fast-reliable"
+          />
+          <h3>Fast & Reliable</h3>
+          <p>Create short URLs instantly</p>
+        </div>
+        <div class="feature-card">
+          <img
+            src="https://img.icons8.com/?size=100&id=mj75mbkkzOUs&format=png&color=FFFFFF"
+            alt="custom-alias"
+          />
+          <h3>Custom Alias</h3>
+          <p>Choose your own short link</p>
+        </div>
+        <div class="feature-card">
+          <img
+            src="https://img.icons8.com/?size=100&id=ONpoTkSjQXY2&format=png&color=FFFFFF"
+            alt="qr-code"
+          />
+          <h3>QR Codes</h3>
+          <p>Generate QR codes instantly</p>
+        </div>
+        <div class="feature-card">
+          <img
+            src="https://img.icons8.com/?size=100&id=2COTJ99KGrVY&format=png&color=FFFFFF"
+            alt="short-url"
+          />
+          <h3>Short URL's</h3>
+          <p>Instant and easy to share</p>
+        </div>
+      </div>
+    </div>
+    <footer class="footer">
+      <div class="footer-container">
+        <div class="footer-section">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="/about">About Us</a></li>
+            <li><a href="/features">Features</a></li>
+            <li><a href="/pricing">Pricing</a></li>
+            <li><a href="/contact">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h3>Resources</h3>
+          <ul>
+            <li><a href="/blog">Blog</a></li>
+            <li><a href="/docs">Documentation</a></li>
+            <li><a href="/api">API</a></li>
+            <li><a href="/faq">FAQ</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h3>Legal</h3>
+          <ul>
+            <li><a href="/privacy">Privacy Policy</a></li>
+            <li><a href="/terms">Terms of Service</a></li>
+            <li><a href="/cookies">Cookie Policy</a></li>
+            <li><a href="/gdpr">GDPR</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h3>Connect</h3>
+          <ul>
+            <li><a href="https://twitter.com">Twitter</a></li>
+            <li><a href="https://github.com">GitHub</a></li>
+            <li><a href="https://linkedin.com">LinkedIn</a></li>
+            <li><a href="mailto:contact@urlshortener.com">Email</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2024 URL Shortener. All rights reserved.</p>
+      </div>
+    </footer>
+    <script>
       document
         .getElementById("urlForm")
         .addEventListener("submit", async function (event) {
@@ -262,22 +433,21 @@
           const loading = document.getElementById("loading");
           const result = document.getElementById("result");
           const error = document.getElementById("error");
-          const copyBtn = document.getElementById("copyBtn");
-          const qrCanvas = document.getElementById("qrCanvas"); // Reference to the canvas element
+          const qrSection = document.getElementById("qrSection");
+          const qrCanvas = document.getElementById("qrCanvas");
 
-          if (!isValidURL(originalURL)) {
-            error.innerText = "Invalid URL. Please enter a valid URL.";
-            result.innerHTML = "";
-            copyBtn.style.display = "none";
-            qrCanvas.style.display = "none"; // Hide canvas on error
+          // Validate URL
+          try {
+            new URL(originalURL);
+          } catch {
+            error.innerText = "Please enter a valid URL";
             return;
           }
 
           loading.style.display = "block";
-          result.innerHTML = "";
-          error.innerHTML = "";
-          copyBtn.style.display = "none";
-          qrCanvas.style.display = "none"; // Hide canvas during loading
+          error.innerText = "";
+          result.style.display = "none";
+          qrSection.style.display = "none";
 
           try {
             const response = await fetch(
@@ -296,36 +466,28 @@
 
             if (response.ok) {
               result.innerHTML = `Shortened URL: <a href="${data.shortURL}" target="_blank">${data.shortURL}</a>`;
-              copyBtn.style.display = "block";
-              copyBtn.onclick = function () {
-                navigator.clipboard
-                  .writeText(data.shortURL)
-                  .then(() => {
-                    alert("Shortened URL copied to clipboard!");
-                  })
-                  .catch((err) => {
-                    console.error("Could not copy text: ", err);
-                  });
-              };
+              result.style.display = "block";
 
               // Generate QR Code
-              qrCanvas.style.display = "block"; // Show the canvas
+              qrSection.style.display = "block";
               QRCode.toCanvas(
                 qrCanvas,
                 data.shortURL,
                 { width: 200 },
                 function (error) {
                   if (error) console.error(error);
+
+                  // Setup download link
+                  const downloadLink = document.getElementById("downloadQR");
+                  downloadLink.href = qrCanvas.toDataURL("image/png");
                 }
               );
             } else {
-              error.innerText = "Error: " + data.error;
-              qrCanvas.style.display = "none"; // Hide canvas on error
+              error.innerText = data.error || "Failed to shorten URL";
             }
           } catch (err) {
             loading.style.display = "none";
             error.innerText = "An error occurred. Please try again later.";
-            qrCanvas.style.display = "none"; // Hide canvas on error
           }
         });
     </script>
