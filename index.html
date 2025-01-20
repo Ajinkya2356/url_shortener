@@ -3,9 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>
-      URL Shortener & QR Code Generator
-    </title>
+    <title>URL Shortener & QR Code Generator</title>
     <meta
       name="description"
       content="Transform long URLs into short links and instantly generate QR codes. Our URL Shortener provides custom aliases, QR code generation for easy sharing, and analytics tracking. Perfect for business cards, marketing materials, and social media sharing."
@@ -90,10 +88,19 @@
         color: #cccccc;
       }
 
-      input[type="text"] {
+      #urlForm {
         width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+        padding: 20px 0;
+      }
+
+      input[type="text"] {
+        width: calc(100% - 30px);
         padding: 15px;
-        margin: 20px 0;
+        margin: 10px 0;
         border: 1px solid #555;
         border-radius: 10px;
         background-color: #333333;
@@ -101,6 +108,7 @@
         font-size: 1rem;
         outline: none;
         transition: box-shadow 0.3s;
+        box-sizing: border-box;
       }
 
       input[type="text"]:focus {
@@ -171,11 +179,14 @@
         display: block;
       }
 
-      #loading{
+      #loading {
         margin-top: 5%;
       }
 
       @media (max-width: 600px) {
+        #urlForm {
+          padding: 10px;
+        }
         h1 {
           font-size: 2rem;
         }
