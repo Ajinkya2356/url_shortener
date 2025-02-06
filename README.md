@@ -23,11 +23,11 @@ You can access the live application here:
 ## Screenshots
 
 ### Home Page
-![Home Page 1](https://drive.google.com/file/d/1pxRyJn5Az4-IzQe2yG6R8n2w17gv38Gt/view?usp=sharing)
-![Home Page 2](https://drive.google.com/file/d/1WpW5Debq2AgU40uZ3GChZ7l-2kacK0nB/view?usp=sharing)
+![Home Page 1](https://drive.google.com/file/d/1pxRyJn5Az4-IzQe2yG6R8n2w17gv38Gt/preview)
+![Home Page 2](https://drive.google.com/file/d/1WpW5Debq2AgU40uZ3GChZ7l-2kacK0nB/preview)
 
 ### URL Shortening And QR Code Generation
-![Shortened URL](https://drive.google.com/file/d/1S8YLPImoXHVX7xMO_trWPXJ5yY6n6SXX/view?usp=sharing)
+![Shortened URL](https://drive.google.com/file/d/1S8YLPImoXHVX7xMO_trWPXJ5yY6n6SXX/preview)
 
 ## Installation & Setup
 
