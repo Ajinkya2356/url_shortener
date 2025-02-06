@@ -23,11 +23,11 @@ You can access the live application here:
 ## Screenshots
 
 ### Home Page
-![](https://drive.google.com/file/d/1pxRyJn5Az4-IzQe2yG6R8n2w17gv38Gt/preview)![Alt text](https://drive.google.com/uc?export=view&id=1pxRyJn5Az4-IzQe2yG6R8n2w17gv38Gt)
-![](https://drive.google.com/file/d/1WpW5Debq2AgU40uZ3GChZ7l-2kacK0nB/preview)![Alt text](https://drive.google.com/uc?export=view&id=1WpW5Debq2AgU40uZ3GChZ7l-2kacK0nB)
+![](https://drive.google.com/file/d/1vLwfkSk1BdUkMQnPvWVPdnR0hTlqYFl2/preview)![Alt text](https://drive.google.com/uc?export=view&id=1vLwfkSk1BdUkMQnPvWVPdnR0hTlqYFl2)
+![](https://drive.google.com/file/d/1VjjZC0OCvPdIWG9WZxphOoRswqsTPkxn/preview)![Alt text](https://drive.google.com/uc?export=view&id=1VjjZC0OCvPdIWG9WZxphOoRswqsTPkxn)
 
 ### URL Shortening And QR Code Generation
-![](https://drive.google.com/file/d/1S8YLPImoXHVX7xMO_trWPXJ5yY6n6SXX/preview)![Alt text](https://drive.google.com/uc?export=view&id=1S8YLPImoXHVX7xMO_trWPXJ5yY6n6SXX)
+![](https://drive.google.com/file/d/1zOdUg7mdDwJ0eSUwaZ69K5A7d0hUD7kJ/preview)![Alt text](https://drive.google.com/uc?export=view&id=1zOdUg7mdDwJ0eSUwaZ69K5A7d0hUD7kJ)
 
 ## Installation & Setup
 
