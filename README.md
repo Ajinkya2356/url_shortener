@@ -23,7 +23,7 @@ You can access the live application here:
 ## Screenshots
 
 ### Home Page
-![Home Page 1](https://drive.google.com/file/d/1pxRyJn5Az4-IzQe2yG6R8n2w17gv38Gt/preview)
+![Home Page 1](https://drive.google.com/file/d/1pxRyJn5Az4-IzQe2yG6R8n2w17gv38Gt/preview)![Alt text](https://drive.google.com/uc?export=view&id=1pxRyJn5Az4-IzQe2yG6R8n2w17gv38Gt)
 ![Home Page 2](https://drive.google.com/file/d/1WpW5Debq2AgU40uZ3GChZ7l-2kacK0nB/preview)
 
 ### URL Shortening And QR Code Generation
