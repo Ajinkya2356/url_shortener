@@ -11,7 +11,6 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"url-shortener/service"
-	"url-shortener/constants"
 )
 
 type ShortenRequest struct {
