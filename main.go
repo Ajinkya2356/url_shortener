@@ -133,16 +133,16 @@ func main() {
 			return
 		}
 		shortURL := fmt.Sprintf("%s://%s/%s", protocol, c.Request.Host, newURL.Alias)
-		// webhookURL := os.Getenv("GOOGLE_CHAT_WEBHOOK_URL")
-		// if webhookURL != "" {
-		// 	utils.SendGoogleChatNotification(
-		// 		webhookURL,
-		// 		constants.NotificationMessage,
-		// 		c.ClientIP(),
-		// 		shortURL,
-		// 		req.URL,
-		// 	)
-		// }
+		webhookURL := os.Getenv("GOOGLE_CHAT_WEBHOOK_URL")
+		if webhookURL != "" {
+			utils.SendGoogleChatNotification(
+				webhookURL,
+				constants.NotificationMessage,
+				c.ClientIP(),
+				shortURL,
+				req.URL,
+			)
+		}
 		c.JSON(http.StatusOK, gin.H{"shortURL": shortURL})
 	})
 	router.GET("/:shortURL", func(c*gin.Context){
