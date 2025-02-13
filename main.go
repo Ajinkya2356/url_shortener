@@ -148,10 +148,10 @@ func main() {
 		if webhookURL != "" {
 			utils.SendGoogleChatNotification(
 				webhookURL,
-				constants.URLShortenerSuccess,
-				c.ClientIP(),
-				shortURL,
-				req.URL,
+				"success",
+				"localhost",
+				"http://localhost:8080/abc123",
+				"https://www.example.com/long-url-path",
 			)
 		}
 		c.JSON(http.StatusOK, gin.H{"shortURL": shortURL})
