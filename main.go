@@ -30,6 +30,14 @@ func init() {
 
 	// Set Gin to debug mode to see all logs
 	gin.SetMode(gin.DebugMode)  // Changed from ReleaseMode
+
+	// Add webhook URL verification
+	webhookURL := os.Getenv("GOOGLE_CHAT_WEBHOOK_URL")
+	if webhookURL == "" {
+		log.Println("Warning: GOOGLE_CHAT_WEBHOOK_URL is not set")
+	} else {
+		log.Printf("Webhook URL configured: %s", webhookURL)
+	}
 }
 
 
