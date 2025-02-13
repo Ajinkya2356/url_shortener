@@ -6,11 +6,11 @@ import (
 	"net/http"
 	"os"
 	"time"
+	"strings"
 	"url-shortener/constants"
 	"url-shortener/service"
 	"url-shortener/storage"
 	"url-shortener/utils"
-
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -43,7 +43,22 @@ func main() {
 	db := storage.InitDB()
 	router := gin.Default()
 	router.Use(gin.Logger())
-	router.SetTrustedProxies(nil)
+	router.SetTrustedProxies([]string{"127.0.0.1"})
+
+	getClientIP := func(c *gin.Context) string {
+        // Check X-Real-IP header first
+        if ip := c.GetHeader("X-Real-IP"); ip != "" {
+            return ip
+        }
+        
+        // Check X-Forwarded-For header
+        if ip := c.GetHeader("X-Forwarded-For"); ip != "" {
+            return strings.Split(ip, ",")[0] // Get the first IP if multiple
+        }
+        
+        // Fallback to RemoteAddr
+        return c.Request.RemoteAddr
+    }
 
 	// Custom logging middleware:
 	router.Use(gin.LoggerWithFormatter(func(param gin.LogFormatterParams) string {
@@ -129,7 +144,7 @@ func main() {
 				utils.SendGoogleChatNotificationAsync(
 					webhookURL,
 					constants.URLShortenerSuccess,
-					c.ClientIP(),
+					getClientIP(c),
 					shortURL,
 					req.URL,
 				)
@@ -151,7 +166,7 @@ func main() {
 			utils.SendGoogleChatNotificationAsync(
 				webhookURL,
 				constants.URLShortenerSuccess,
-				c.ClientIP(),
+				getClientIP(c),
 				shortURL,
 				req.URL,
 			)
