@@ -136,9 +136,9 @@ func main() {
 		shortURL := fmt.Sprintf("%s://%s/%s", protocol, c.Request.Host, newURL.Alias)
 		webhookURL := os.Getenv("GOOGLE_CHAT_WEBHOOK_URL")
 		if webhookURL != "" {
-			utils.SendGoogleChatNotification(
+			utils.SendGoogleChatNotificationAsync(
 				webhookURL,
-				constants.NotificationMessage,
+				constants.URLShortenerSuccess,
 				c.ClientIP(),
 				shortURL,
 				req.URL,
