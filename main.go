@@ -29,7 +29,7 @@ func init() {
 	log.SetOutput(os.Stdout)
 
 	// Set Gin to debug mode to see all logs
-	gin.SetMode(gin.ReleaseMode)  // Changed from ReleaseMode
+	gin.SetMode(gin.DebugMode)  // Changed from ReleaseMode
 }
 
 
