@@ -6,11 +6,14 @@ import (
 	"net/http"
 	"os"
 	"time"
+	"url-shortener/constants"
+	"url-shortener/service"
 	"url-shortener/storage"
 	"url-shortener/utils"
+
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"url-shortener/service"
+	"github.com/joho/godotenv"
 )
 
 type ShortenRequest struct {
@@ -23,14 +26,18 @@ type URLResponse struct {
 }
 
 func init() {
-	webhookURL := os.Getenv("GOOGLE_CHAT_WEBHOOK_URL")
-	if webhookURL == "" {
+	// Load from .env file
+	if err := godotenv.Load(".env"); err != nil {
+		log.Println("No .env file found or error loading file")
+	}
+	// Optionally print out the value once at startup
+	webhook := os.Getenv("GOOGLE_CHAT_WEBHOOK_URL")
+	if webhook == "" {
 		log.Println("Warning: GOOGLE_CHAT_WEBHOOK_URL is not set")
 	} else {
-		log.Printf("Webhook URL configured: %s", webhookURL)
+		log.Printf("Webhook URL configured: %s", webhook)
 	}
 }
-
 
 func main() {
 	db := storage.InitDB()
@@ -38,7 +45,7 @@ func main() {
 	router.Use(gin.Logger())
 	router.SetTrustedProxies(nil)
 
-	// Add custom logging middleware
+	// Custom logging middleware:
 	router.Use(gin.LoggerWithFormatter(func(param gin.LogFormatterParams) string {
 		return fmt.Sprintf("[%v] - %s %s \"%s\" %d %v %s\n",
 			param.TimeStamp.Format(time.RFC3339),
@@ -59,15 +66,10 @@ func main() {
 		AllowCredentials: true,
 	}))
 
-	// Add request logging middleware
+	// Request logging middleware:
 	router.Use(func(c *gin.Context) {
-		// Start timer
 		start := time.Now()
-
-		// Process request
 		c.Next()
-
-		// Log request details
 		log.Printf("Request: %s %s | Status: %d | Duration: %v",
 			c.Request.Method,
 			c.Request.URL.Path,
@@ -77,14 +79,14 @@ func main() {
 	})
 
 	router.StaticFile("/", "./index.html")
-	router.POST("/encode", func(c*gin.Context){
+	router.POST("/encode", func(c *gin.Context) {
 		var req ShortenRequest
 		if err := c.ShouldBindJSON(&req); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
 
-		// check if original url exists
+		// Check if original URL exists
 		var existingURL storage.URL
 		urlExists := db.Where("original_url = ?", req.URL).First(&existingURL).Error == nil
 
@@ -107,7 +109,7 @@ func main() {
 				hash = service.GenerateURLShortener(hash)
 			}
 		}
-
+		
 		protocol := "http"
 		if c.Request.Header.Get("X-Forwarded-Proto") == "https" || c.Request.TLS != nil {
 			protocol = "https"
@@ -122,10 +124,19 @@ func main() {
 				return
 			}
 			shortURL := fmt.Sprintf("%s://%s/%s", protocol, c.Request.Host, existingURL.Alias)
+			webhookURL := os.Getenv("GOOGLE_CHAT_WEBHOOK_URL")
+			if webhookURL != "" {
+				utils.SendGoogleChatNotificationAsync(
+					webhookURL,
+					constants.URLShortenerSuccess,
+					c.ClientIP(),
+					shortURL,
+					req.URL,
+				)
+			}
 			c.JSON(http.StatusOK, gin.H{"shortURL": shortURL})
 			return
 		}
-
 		newURL := storage.URL{
 			OriginalURL: req.URL,
 			Alias:       finalAlias,
@@ -137,21 +148,20 @@ func main() {
 		shortURL := fmt.Sprintf("%s://%s/%s", protocol, c.Request.Host, newURL.Alias)
 		webhookURL := os.Getenv("GOOGLE_CHAT_WEBHOOK_URL")
 		if webhookURL != "" {
-			log.Println("Sending notification to Google Chat")
 			utils.SendGoogleChatNotificationAsync(
 				webhookURL,
-				"success",
-				"localhost",
-				"http://localhost:8080/abc123",
-				"https://www.example.com/long-url-path",
+				constants.URLShortenerSuccess,
+				c.ClientIP(),
+				shortURL,
+				req.URL,
 			)
 		}
 		c.JSON(http.StatusOK, gin.H{"shortURL": shortURL})
 	})
-	router.GET("/:shortURL", func(c*gin.Context){
+
+	router.GET("/:shortURL", func(c *gin.Context) {
 		shortURL := c.Param("shortURL")
 		var url storage.URL
-
 		if err := db.Where("alias = ?", shortURL).First(&url).Error; err != nil {
 			c.JSON(http.StatusNotFound, gin.H{"error": "Short URL not found"})
 			return
@@ -159,40 +169,7 @@ func main() {
 		c.Redirect(http.StatusFound, url.OriginalURL)
 	})
 
-	router.POST("/test-webhook", func(c *gin.Context) {
-		var notificationData struct {
-			Message     string `json:"message"`
-			ClientIP    string `json:"clientIP"`
-			ShortURL    string `json:"shortURL"`
-			OriginalURL string `json:"originalURL"`
-		}
-
-		if err := c.ShouldBindJSON(&notificationData); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid notification data"})
-			return
-		}
-
-		webhookURL := os.Getenv("GOOGLE_CHAT_WEBHOOK_URL")
-		if webhookURL == "" {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "Webhook URL not configured"})
-			return
-		}
-
-		err := utils.SendGoogleChatNotification(
-			webhookURL,
-			notificationData.Message,
-			notificationData.ClientIP,
-			notificationData.ShortURL,
-			notificationData.OriginalURL,
-		)
-
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
-		}
-
-		c.JSON(http.StatusOK, gin.H{"message": "Notification sent successfully"})
-	})
+	// /test-webhook route omitted for brevity.
 
 	router.Run(":8080")
 }
