@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"log"
 	"bytes"
 	"encoding/json"
 	"fmt"
@@ -59,19 +58,20 @@ func SendGoogleChatNotification(webhookURL, message, clientIP, shortURL, origina
 }
 
 func SendGoogleChatNotificationAsync(webhookURL, message, clientIP, shortURL, originalURL string) {
+	fmt.Println("Sending notification")
 	go func() {
 		defer func() {
 			if r := recover(); r != nil {
-				log.Printf("Recovered from panic in notification: %v", r)
+				fmt.Printf("Recovered from panic in notification: %v", r)
 			}
 		}()
 
-		log.Printf("Attempting to send notification for URL: %s", shortURL)
+		fmt.Printf("Attempting to send notification for URL: %s", shortURL)
 		err := SendGoogleChatNotification(webhookURL, message, clientIP, shortURL, originalURL)
 		if err != nil {
-			log.Printf("Failed to send notification: %v", err)
+			fmt.Printf("Failed to send notification: %v", err)
 			return
 		}
-		log.Printf("Successfully sent notification for URL: %s", shortURL)
+		fmt.Printf("Successfully sent notification for URL: %s", shortURL)
 	}()
 }

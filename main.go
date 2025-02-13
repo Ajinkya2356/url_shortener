@@ -23,14 +23,6 @@ type URLResponse struct {
 }
 
 func init() {
-	// Configure detailed logging
-	log.SetFlags(log.LstdFlags | log.Lshortfile)
-	log.SetOutput(os.Stdout)
-
-	// Set Gin to debug mode to see all logs
-	gin.SetMode(gin.DebugMode)  // Changed from ReleaseMode
-
-	// Add webhook URL verification
 	webhookURL := os.Getenv("GOOGLE_CHAT_WEBHOOK_URL")
 	if webhookURL == "" {
 		log.Println("Warning: GOOGLE_CHAT_WEBHOOK_URL is not set")
@@ -145,7 +137,8 @@ func main() {
 		shortURL := fmt.Sprintf("%s://%s/%s", protocol, c.Request.Host, newURL.Alias)
 		webhookURL := os.Getenv("GOOGLE_CHAT_WEBHOOK_URL")
 		if webhookURL != "" {
-			utils.SendGoogleChatNotification(
+			log.Println("Sending notification to Google Chat")
+			utils.SendGoogleChatNotificationAsync(
 				webhookURL,
 				"success",
 				"localhost",
