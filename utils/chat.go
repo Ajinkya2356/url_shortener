@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"log"
 	"bytes"
 	"encoding/json"
 	"fmt"
