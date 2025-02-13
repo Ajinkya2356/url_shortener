@@ -25,10 +25,8 @@ func SendGoogleChatNotification(webhookURL, message, clientIP, shortURL, origina
 		return fmt.Errorf("invalid webhook URL format: %s", webhookURL)
 	}
 
-	// Add QR code to the message
-	qrCodeURL := fmt.Sprintf("https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=%s", shortURL)
-	text := fmt.Sprintf("*%s*\n\nClient IP: %s\nShort URL: %s\nOriginal URL: %s\nQR Code: %s",
-		message, clientIP, shortURL, originalURL, qrCodeURL)
+	text := fmt.Sprintf("*%s*\n\nClient IP: %s\nShort URL: %s\nOriginal URL: %s\n",
+		message, clientIP, shortURL, originalURL)
 
 	chatMsg := ChatMessage{
 		Text: text,

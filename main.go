@@ -118,8 +118,10 @@ func main() {
 		}
 
 		protocol := "http"
-		if c.Request.TLS != nil {
+		if c.Request.Header.Get("X-Forwarded-Proto") == "https" || c.Request.TLS != nil {
 			protocol = "https"
+		} else if c.Request.Header.Get("X-Forwarded-Proto") != "" {
+			protocol = c.Request.Header.Get("X-Forwarded-Proto")
 		}
 
 		if urlExists {
@@ -144,7 +146,7 @@ func main() {
 		shortURL := fmt.Sprintf("%s://%s/%s", protocol, c.Request.Host, newURL.Alias)
 		webhookURL := os.Getenv("GOOGLE_CHAT_WEBHOOK_URL")
 		if webhookURL != "" {
-			utils.SendGoogleChatNotificationAsync(
+			utils.SendGoogleChatNotification(
 				webhookURL,
 				constants.URLShortenerSuccess,
 				c.ClientIP(),
