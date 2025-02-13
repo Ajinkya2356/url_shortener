@@ -10,17 +10,12 @@ import (
 	"time"
 )
 
-// SendGoogleChatNotificationAsync sends a notification asynchronously
-func SendGoogleChatNotificationAsync(webhookURL, message, clientIP, shortURL, originalURL string) {
-	go func() {
-		_ = SendGoogleChatNotification(webhookURL, message, clientIP, shortURL, originalURL)
-	}()
-}
 
 type ChatMessage struct {
 	Text string `json:"text"`
 }
 
+// SendGoogleChatNotification sends a notification to Google Chat
 func SendGoogleChatNotification(webhookURL, message, clientIP, shortURL, originalURL string) error {
 	if !strings.HasPrefix(webhookURL, "https://chat.googleapis.com/") {
 		return fmt.Errorf("invalid webhook URL format")
@@ -30,9 +25,8 @@ func SendGoogleChatNotification(webhookURL, message, clientIP, shortURL, origina
 		return fmt.Errorf("webhook URL is empty")
 	}
 
-	qrCodeURL := fmt.Sprintf("https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=%s", shortURL)
-	text := fmt.Sprintf("*%s*\n\nClient IP: %s\nShort URL: %s\nOriginal URL: %s\nQR Code: %s",
-		message, clientIP, shortURL, originalURL, qrCodeURL)
+	text := fmt.Sprintf("*%s*\n\nClient IP: %s\nShort URL: %s\nOriginal URL: %s\n",
+		message, clientIP, shortURL, originalURL)
 
 	chatMsg := ChatMessage{
 		Text: text,

@@ -1,8 +1,6 @@
 package main
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -10,7 +8,6 @@ import (
 	"time"
 	"url-shortener/storage"
 	"url-shortener/utils"
-	"url-shortener/constants"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"url-shortener/service"
@@ -31,37 +28,9 @@ func init() {
 	log.SetOutput(os.Stdout)
 
 	// Set Gin to debug mode to see all logs
-	gin.SetMode(gin.DebugMode)  // Changed from ReleaseMode
+	gin.SetMode(gin.ReleaseMode)  // Changed from ReleaseMode
 }
 
-// First, add a helper function at the top level
-func sendNotificationViaWebhook(message, clientIP, shortURL, originalURL string) {
-    notificationData := map[string]string{
-        "message":     message,
-        "clientIP":    clientIP,
-        "shortURL":    shortURL,
-        "originalURL": originalURL,
-    }
-
-    jsonData, err := json.Marshal(notificationData)
-    if err != nil {
-        log.Printf("Error marshaling notification data: %v", err)
-        return
-    }
-
-    req, err := http.NewRequest("POST", "http://localhost:8080/test-webhook", bytes.NewBuffer(jsonData))
-    if err != nil {
-        log.Printf("Error creating request: %v", err)
-        return
-    }
-    req.Header.Set("Content-Type", "application/json")
-
-    client := &http.Client{Timeout: 5 * time.Second}
-    _, err = client.Do(req)
-    if err != nil {
-        log.Printf("Error sending notification request: %v", err)
-    }
-}
 
 func main() {
 	db := storage.InitDB()
@@ -139,7 +108,7 @@ func main() {
 			}
 		}
 
-		protocol := "https"
+		protocol := "http"
 		if c.Request.TLS != nil {
 			protocol = "https"
 		}
@@ -164,17 +133,16 @@ func main() {
 			return
 		}
 		shortURL := fmt.Sprintf("%s://%s/%s", protocol, c.Request.Host, newURL.Alias)
-		log.Println("Shortened URL created successfully", shortURL)
-		webhookURL := os.Getenv("GOOGLE_CHAT_WEBHOOK_URL")
-		if webhookURL != "" {
-			log.Println("Sending Google Chat notification")
-			go sendNotificationViaWebhook(
-				constants.URLShortenerSuccess,
-				c.ClientIP(),
-				shortURL,
-				req.URL,
-			)
-		}
+		// webhookURL := os.Getenv("GOOGLE_CHAT_WEBHOOK_URL")
+		// if webhookURL != "" {
+		// 	utils.SendGoogleChatNotification(
+		// 		webhookURL,
+		// 		constants.NotificationMessage,
+		// 		c.ClientIP(),
+		// 		shortURL,
+		// 		req.URL,
+		// 	)
+		// }
 		c.JSON(http.StatusOK, gin.H{"shortURL": shortURL})
 	})
 	router.GET("/:shortURL", func(c*gin.Context){
@@ -186,47 +154,8 @@ func main() {
 			return
 		}
 		c.Redirect(http.StatusFound, url.OriginalURL)
-		webhookURL := os.Getenv("GOOGLE_CHAT_WEBHOOK_URL")
-		if webhookURL != "" {
-			protocol := "http"
-			if c.Request.TLS != nil {
-				protocol = "https"
-			}
-			fullShortURL := fmt.Sprintf("%s://%s/%s", protocol, c.Request.Host, shortURL)
-
-			go sendNotificationViaWebhook(
-				constants.URLRedirectSuccess,
-				c.ClientIP(),
-				fullShortURL,
-				url.OriginalURL,
-			)
-		}
 	})
 
-	// Enhanced test webhook endpoint
-	router.GET("/test-webhook", func(c *gin.Context) {
-		webhookURL := os.Getenv("GOOGLE_CHAT_WEBHOOK_URL")
-		if webhookURL == "" {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "Webhook URL not set"})
-			return
-		}
-
-		err := utils.SendGoogleChatNotification(
-			webhookURL,
-			"Test notification from URL Shortener",
-			c.ClientIP(),
-			"test-short-url",
-			"test-original-url",
-		)
-
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
-		}
-		c.JSON(http.StatusOK, gin.H{"message": "Test notification sent successfully"})
-	})
-
-	// Update the test-webhook endpoint to handle POST requests with data
 	router.POST("/test-webhook", func(c *gin.Context) {
 		var notificationData struct {
 			Message     string `json:"message"`
@@ -242,7 +171,7 @@ func main() {
 
 		webhookURL := os.Getenv("GOOGLE_CHAT_WEBHOOK_URL")
 		if webhookURL == "" {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "Webhook URL not set"})
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Webhook URL not configured"})
 			return
 		}
 
@@ -258,6 +187,7 @@ func main() {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
+
 		c.JSON(http.StatusOK, gin.H{"message": "Notification sent successfully"})
 	})
 
