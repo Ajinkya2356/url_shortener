@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -32,11 +34,40 @@ func init() {
 	gin.SetMode(gin.DebugMode)  // Changed from ReleaseMode
 }
 
-func main() {
-	log.Println("Starting URL Shortener service...")
+// First, add a helper function at the top level
+func sendNotificationViaWebhook(message, clientIP, shortURL, originalURL string) {
+    notificationData := map[string]string{
+        "message":     message,
+        "clientIP":    clientIP,
+        "shortURL":    shortURL,
+        "originalURL": originalURL,
+    }
 
+    jsonData, err := json.Marshal(notificationData)
+    if err != nil {
+        log.Printf("Error marshaling notification data: %v", err)
+        return
+    }
+
+    req, err := http.NewRequest("POST", "http://localhost:8080/test-webhook", bytes.NewBuffer(jsonData))
+    if err != nil {
+        log.Printf("Error creating request: %v", err)
+        return
+    }
+    req.Header.Set("Content-Type", "application/json")
+
+    client := &http.Client{Timeout: 5 * time.Second}
+    _, err = client.Do(req)
+    if err != nil {
+        log.Printf("Error sending notification request: %v", err)
+    }
+}
+
+func main() {
 	db := storage.InitDB()
 	router := gin.Default()
+	router.Use(gin.Logger())
+	router.SetTrustedProxies(nil)
 
 	// Add custom logging middleware
 	router.Use(gin.LoggerWithFormatter(func(param gin.LogFormatterParams) string {
@@ -77,7 +108,6 @@ func main() {
 	})
 
 	router.StaticFile("/", "./index.html")
-	router.Static("/static", "./static")
 	router.POST("/encode", func(c*gin.Context){
 		var req ShortenRequest
 		if err := c.ShouldBindJSON(&req); err != nil {
@@ -109,7 +139,7 @@ func main() {
 			}
 		}
 
-		protocol := "http"
+		protocol := "https"
 		if c.Request.TLS != nil {
 			protocol = "https"
 		}
@@ -138,18 +168,12 @@ func main() {
 		webhookURL := os.Getenv("GOOGLE_CHAT_WEBHOOK_URL")
 		if webhookURL != "" {
 			log.Println("Sending Google Chat notification")
-			go func() {
-				err := utils.SendGoogleChatNotification(
-					webhookURL,
-					constants.URLShortenerSuccess,
-					c.ClientIP(),
-					shortURL,
-					req.URL,
-				)
-				if err != nil {
-					log.Printf("Failed to send notification: %v", err)
-				}
-			}()
+			go sendNotificationViaWebhook(
+				constants.URLShortenerSuccess,
+				c.ClientIP(),
+				shortURL,
+				req.URL,
+			)
 		}
 		c.JSON(http.StatusOK, gin.H{"shortURL": shortURL})
 	})
@@ -170,18 +194,12 @@ func main() {
 			}
 			fullShortURL := fmt.Sprintf("%s://%s/%s", protocol, c.Request.Host, shortURL)
 
-			go func() {
-				err := utils.SendGoogleChatNotification(
-					webhookURL,
-					constants.URLRedirectSuccess,
-					c.ClientIP(),
-					fullShortURL,
-					url.OriginalURL,
-				)
-				if err != nil {
-					log.Printf("Failed to send notification: %v", err)
-				}
-			}()
+			go sendNotificationViaWebhook(
+				constants.URLRedirectSuccess,
+				c.ClientIP(),
+				fullShortURL,
+				url.OriginalURL,
+			)
 		}
 	})
 
@@ -207,5 +225,41 @@ func main() {
 		}
 		c.JSON(http.StatusOK, gin.H{"message": "Test notification sent successfully"})
 	})
+
+	// Update the test-webhook endpoint to handle POST requests with data
+	router.POST("/test-webhook", func(c *gin.Context) {
+		var notificationData struct {
+			Message     string `json:"message"`
+			ClientIP    string `json:"clientIP"`
+			ShortURL    string `json:"shortURL"`
+			OriginalURL string `json:"originalURL"`
+		}
+
+		if err := c.ShouldBindJSON(&notificationData); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid notification data"})
+			return
+		}
+
+		webhookURL := os.Getenv("GOOGLE_CHAT_WEBHOOK_URL")
+		if webhookURL == "" {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Webhook URL not set"})
+			return
+		}
+
+		err := utils.SendGoogleChatNotification(
+			webhookURL,
+			notificationData.Message,
+			notificationData.ClientIP,
+			notificationData.ShortURL,
+			notificationData.OriginalURL,
+		)
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"message": "Notification sent successfully"})
+	})
+
 	router.Run(":8080")
 }
