@@ -26,16 +26,20 @@ type URLResponse struct {
 }
 
 func init() {
-	// Load from .env file
-	if err := godotenv.Load(".env"); err != nil {
+	if err := godotenv.Load(); err != nil {
 		log.Println("No .env file found or error loading file")
 	}
-	// Optionally print out the value once at startup
-	webhook := os.Getenv("GOOGLE_CHAT_WEBHOOK_URL")
-	if webhook == "" {
-		log.Println("Warning: GOOGLE_CHAT_WEBHOOK_URL is not set")
-	} else {
-		log.Printf("Webhook URL configured: %s", webhook)
+	botToken := os.Getenv("TELEGRAM_BOT_TOKEN")
+	chatID := os.Getenv("TELEGRAM_CHAT_ID")
+	
+	if botToken == "" {
+		log.Println("Warning: TELEGRAM_BOT_TOKEN is not set")
+	}
+	if chatID == "" {
+		log.Println("Warning: TELEGRAM_CHAT_ID is not set")
+	}
+	if botToken != "" && chatID != "" {
+		log.Printf("Telegram configuration loaded for chat ID: %s", chatID)
 	}
 }
 
@@ -139,10 +143,12 @@ func main() {
 				return
 			}
 			shortURL := fmt.Sprintf("%s://%s/%s", protocol, c.Request.Host, existingURL.Alias)
-			webhookURL := os.Getenv("GOOGLE_CHAT_WEBHOOK_URL")
-			if webhookURL != "" {
-				utils.SendGoogleChatNotificationAsync(
-					webhookURL,
+			botToken := os.Getenv("TELEGRAM_BOT_TOKEN")
+			chatID := os.Getenv("TELEGRAM_CHAT_ID")
+			if botToken != "" && chatID != "" {
+				utils.SendTelegramNotificationAsync(
+					botToken,
+					chatID,
 					constants.URLShortenerSuccess,
 					getClientIP(c),
 					shortURL,
@@ -161,10 +167,12 @@ func main() {
 			return
 		}
 		shortURL := fmt.Sprintf("%s://%s/%s", protocol, c.Request.Host, newURL.Alias)
-		webhookURL := os.Getenv("GOOGLE_CHAT_WEBHOOK_URL")
-		if webhookURL != "" {
-			utils.SendGoogleChatNotificationAsync(
-				webhookURL,
+		botToken := os.Getenv("TELEGRAM_BOT_TOKEN")
+		chatID := os.Getenv("TELEGRAM_CHAT_ID")
+		if botToken != "" && chatID != "" {
+			utils.SendTelegramNotificationAsync(
+				botToken,
+				chatID,
 				constants.URLShortenerSuccess,
 				getClientIP(c),
 				shortURL,
