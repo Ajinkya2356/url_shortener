@@ -23,11 +23,8 @@ func SendGoogleChatNotification(webhookURL, message, clientIP, shortURL, origina
 	if webhookURL == "" {
 		return fmt.Errorf("webhook URL is empty")
 	}
-
-	// Include QR code URL in the message
-	qrCodeURL := fmt.Sprintf("https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=%s", shortURL)
-	text := fmt.Sprintf("*%s*\n\nClient IP: %s\nShort URL: %s\nOriginal URL: %s\nQR Code: %s",
-		message, clientIP, shortURL, originalURL, qrCodeURL)
+	text := fmt.Sprintf("*%s*\n\nClient IP: %s\nShort URL: %s\nOriginal URL: %s\n",
+		message, clientIP, shortURL, originalURL)
 
 	chatMsg := ChatMessage{
 		Text: text,
@@ -60,6 +57,7 @@ func SendGoogleChatNotificationAsync(webhookURL, message, clientIP, shortURL, or
 	go func() {
 		err := SendGoogleChatNotification(webhookURL, message, clientIP, shortURL, originalURL)
 		if err != nil {
+			log.Println(err)
 			// Silent fail in async mode
 			return
 		}
