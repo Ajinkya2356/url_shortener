@@ -1,0 +1,10 @@
+{
+    "go.toolsEnvVars": {
+        "GOBIN": "${env:USERPROFILE}\\go\\bin",
+        "GO111MODULE": "on",
+        "PATH": "${env:PATH};${env:USERPROFILE}\\go\\bin"
+    },
+    "terminal.integrated.env.windows": {
+        "PATH": "${env:PATH};${env:USERPROFILE}\\go\\bin"
+    }
+}
