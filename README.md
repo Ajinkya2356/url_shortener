@@ -18,7 +18,7 @@ A simple yet powerful web application that allows users to shorten long URLs and
 ## Hosted Application
 
 You can access the live application here:
-[**Live Demo**](https://url-shortener-jl9o.onrender.com/)
+[**Live Demo**](https://goshort-oba4.onrender.com/)
 
 ## Screenshots
 
